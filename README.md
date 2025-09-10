@@ -4,7 +4,6 @@ This repository contains the code and PNML models used to compute process model 
 ## Repository structure
 - `models/`: all PNML files to be compared
 - `run_experiment.py`: main script to compute all metrics
-- `aggregate_results.py`: (optional) aggregates multiple experiments into a single CSV
 - `results/`: folder where CSVs with metrics are saved
 - `requirements.txt`: Python dependencies with fixed versions
 - `reproducibility_protocol.tex`: document describing the 5-step reproducibility protocol
