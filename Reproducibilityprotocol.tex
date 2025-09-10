@@ -1,0 +1,14 @@
+The reproducibility protocol is articulated in five main steps:
+
+\begin{itemize}
+    \item Environment setup. A Python~3.11 virtual environment is created and all dependencies listed in \texttt{requirements.txt} are installed. Required packages with fixed versions include:
+    \texttt{pm4py==2.3.11}, \texttt{networkx==3.1}, \texttt{numpy==1.26.1}, \texttt{matplotlib==3.8.0}, \texttt{seaborn==0.12.3}, and \texttt{pandas==2.1.1}. A snapshot of the installed environment is stored using \texttt{pip freeze}.
+    
+    \item Model import and pre-processing. PNML models are loaded with \texttt{pm4py.objects.petri.importer}, visible transitions are extracted for event set comparison, and simulated logs are generated with the PM4Py simulator. Transition Adjacency Relations (TAR) are derived from the logs to capture behavioral patterns. Structural comparisons are obtained by converting PNML models into event and relation sets, where activity labels are standardized for semantic similarity analysis.
+    
+    \item Metric computation. Two complementary perspectives are integrated. Trace-based metrics, computed with PM4Py, include fitness (alignment-based conformance), precision (extent to which the model behavior is observed in the log), generalization (ability to capture unseen but plausible behavior), and simplicity (structural complexity). Model-based metrics include PES similarity (Jaccard index over event and relation sets), PSP (union of events and relations across models), TAR-based similarity (Jaccard index between TAR sets from simulated logs), and precision, recall, and F1-score computed on both events and relations by treating the first model as gold standard and the second as prediction.
+    
+    \item Result storage and analysis. All metrics are saved in structured CSV files using \texttt{pandas}. For each model pair, the CSV files include fitness, precision, generalization, simplicity, PES similarity, TAR similarity, and F1-scores. Results can be aggregated and visualized with \texttt{matplotlib} and \texttt{seaborn}. Outputs are stored in the \texttt{results/} folder with metadata such as model identifiers, timestamp, and repository commit hash.
+    
+    \item Reproducibility verification. The entire pipeline can be reproduced automatically. All scripts (\texttt{run\_experiment.py}, \texttt{aggregate\_results.py}, and visualization notebooks) are provided in the GitHub repository. A continuous integration workflow (e.g., GitHub Actions) runs a minimal end-to-end experiment to confirm consistent reproducibility of the published results.
+\end{itemize}
