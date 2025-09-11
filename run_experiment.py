@@ -1,8 +1,8 @@
-# *1. Environment setup: creare un virtual environment Python 3.11 e installare le dipendenze da requirements.txt*
-# *2. Model import and pre-processing: caricare i modelli PNML, estrarre eventi, relazioni e TAR*
-# *3. Metric computation: calcolare PES, PSP, TAR similarity, fitness, precision, generalization, simplicity, F1-score*
-# *4. Result storage and analysis: salvare tutte le metriche in CSV per ciascuna coppia di modelli*
-# *5. Reproducibility verification: pipeline completamente riproducibile con script disponibili nel repository*
+# *1. Environment setup: create a Python 3.11 virtual environment and install the dependencies from requirements.txt*
+# *2. Model import and pre-processing: load PNML models, extract events, relations, and TAR*
+# *3. Metric computation: measure PES, PSP, TAR similarity, fitness, precision, generalization, simplicity, F1-score*
+# *4. Result storage and analysis: save all metrics in a CSV file for each pair of models*
+# *5. Reproducibility verification: fully reproducible pipeline with scripts available in the repository.*
 
 import argparse
 import pandas as pd
