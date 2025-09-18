@@ -127,3 +127,27 @@ df = pd.DataFrame([{
 csv_path = "pairs.csv"
 df.to_csv(csv_path, index=False)
 print(f"✅ All metrics saved to {csv_path}")
+
+#results analysis #optional
+import matplotlib.pyplot as plt
+import pandas as pd
+df = pd.read_csv("pairs.csv")
+
+df["pair"] = df["model_a"].str.extract(r'(\d+)') + "-" + df["model_b"].str.extract(r'(\d+)')
+
+metrics_f1 = ["pes_events_f1", "pes_relations_f1", "tar_f1", "pm4py_f1"]
+
+plt.figure(figsize=(12, 6))
+
+for metric in metrics_f1:
+    plt.plot(df["pair"], df[metric], marker='o', label=metric)
+
+plt.xlabel("Model Pair")
+plt.ylabel("F1 Score")
+plt.title("Comparison of F1 Scores for BirthCertificate Model Pairs")
+plt.xticks(rotation=45)
+plt.ylim(0, 0.5)
+plt.grid(True, linestyle='--', alpha=0.5)
+plt.legend()
+plt.tight_layout()
+plt.show()
