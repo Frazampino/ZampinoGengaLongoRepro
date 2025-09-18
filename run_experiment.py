@@ -11,6 +11,7 @@ Compute similarity metrics between two PNML Petri nets:
 - PES (Process Element Similarity) on events and relations, with F1-score
 - TAR (Transition Adjacency Relations) with F1-score
 - PM4Py conformance metrics: fitness, precision, F1-score (harmonic mean), generalization, simplicity
+- Save all metrics in CSV: pairs.csv
 """
 
 import pandas as pd
@@ -37,7 +38,6 @@ def precision_recall_f1(gold_set, predicted_set):
     return precision, recall, f1
 
 def harmonic_f1(a, b):
-    """Compute harmonic mean between two values (like F1-score)"""
     return 2 * a * b / (a + b) if (a + b) else 0
 
 def extract_events_and_relations(net):
@@ -99,16 +99,31 @@ avg_fitness = sum(r["fitness"] for r in results) / len(results)
 pm4py_precision = precision_evaluator.apply(simulated_log, net_b, im_b, fm_b)
 pm4py_generalization = generalization_evaluator.apply(simulated_log, net_b, im_b, fm_b)
 pm4py_simplicity = simplicity_evaluator.apply(net_b)
-pm4py_f1 = harmonic_f1(avg_fitness, pm4py_precision)  # F1-like measure
+pm4py_f1 = harmonic_f1(avg_fitness, pm4py_precision)
 
-# --- Print metrics with F1-score
-print("=== PES ===")
-print(f"Events: Jaccard={pes_events_jaccard:.3f}, Precision={pes_events_precision:.3f}, Recall={pes_events_recall:.3f}, F1={pes_events_f1:.3f}")
-print(f"Relations: Jaccard={pes_relations_jaccard:.3f}, Precision={pes_relations_precision:.3f}, Recall={pes_relations_recall:.3f}, F1={pes_relations_f1:.3f}")
+# --- Save all metrics in CSV
+df = pd.DataFrame([{
+    "model_a": model_a_path,
+    "model_b": model_b_path,
+    "pes_events_jaccard": pes_events_jaccard,
+    "pes_events_precision": pes_events_precision,
+    "pes_events_recall": pes_events_recall,
+    "pes_events_f1": pes_events_f1,
+    "pes_relations_jaccard": pes_relations_jaccard,
+    "pes_relations_precision": pes_relations_precision,
+    "pes_relations_recall": pes_relations_recall,
+    "pes_relations_f1": pes_relations_f1,
+    "tar_similarity": tar_similarity,
+    "tar_precision": tar_precision,
+    "tar_recall": tar_recall,
+    "tar_f1": tar_f1,
+    "pm4py_fitness": avg_fitness,
+    "pm4py_precision": pm4py_precision,
+    "pm4py_f1": pm4py_f1,
+    "pm4py_generalization": pm4py_generalization,
+    "pm4py_simplicity": pm4py_simplicity
+}])
 
-print("\n=== TAR ===")
-print(f"TAR similarity={tar_similarity:.3f}, Precision={tar_precision:.3f}, Recall={tar_recall:.3f}, F1={tar_f1:.3f}")
-
-print("\n=== PM4Py Metrics ===")
-print(f"Fitness={avg_fitness:.3f}, Precision={pm4py_precision:.3f}, F1={pm4py_f1:.3f}, "
-      f"Generalization={pm4py_generalization:.3f}, Simplicity={pm4py_simplicity:.3f}")
+csv_path = "pairs.csv"
+df.to_csv(csv_path, index=False)
+print(f"✅ All metrics saved to {csv_path}")
