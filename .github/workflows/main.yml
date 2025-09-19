@@ -34,7 +34,8 @@ jobs:
       - name: Extract model files
         run: |
           unzip -o models-variants.zip -d temp
-          mv temp/*/* models/
+          mkdir -p models
+          mv temp/*/*/models/* models/
           rm -rf temp
 
       - name: Run experiment
