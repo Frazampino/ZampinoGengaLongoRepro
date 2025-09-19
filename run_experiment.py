@@ -14,10 +14,7 @@ Compute similarity metrics between two PNML Petri nets:
 - Save all metrics in CSV: pairs.csv
 """
 
-import os
-import sys
 import pandas as pd
-import zipfile
 from pm4py.objects.petri_net.importer import importer as pnml_importer
 from pm4py.algo.simulation.playout.petri_net import algorithm as simulator
 from pm4py.algo.conformance.alignments.petri_net import algorithm as alignments
@@ -69,35 +66,17 @@ def dab_similarity(tar1, tar2):
     return len(inter) / len(union) if union else 1.0
 
 # -----------------------------
-# Paths dei modelli
+# Main computation
 # -----------------------------
 model_a_path = "models/birthCertificate_p31.pnml"
 model_b_path = "models/birthCertificate_p32.pnml"
 
-# Verifica che i file esistano
-if not os.path.exists(model_a_path):
-    print(f"❌ File non trovato: {model_a_path}")
-    sys.exit(1)
-if not os.path.exists(model_b_path):
-    print(f"❌ File non trovato: {model_b_path}")
-    sys.exit(1)
-
-# -----------------------------
-# Import modelli
-# -----------------------------
 net_a, im_a, fm_a = pnml_importer.apply(model_a_path)
 net_b, im_b, fm_b = pnml_importer.apply(model_b_path)
 
 # --- PES
 events_a, relations_a = extract_events_and_relations(net_a)
 events_b, relations_b = extract_events_and_relations(net_b)
-
-if not events_a or not events_b:
-    print("❌ Nessun evento trovato in uno dei modelli")
-    sys.exit(1)
-if not relations_a or not relations_b:
-    print("❌ Nessuna relazione trovata in uno dei modelli")
-    sys.exit(1)
 
 pes_events_jaccard = jaccard_similarity(events_a, events_b)
 pes_relations_jaccard = jaccard_similarity(relations_a, relations_b)
@@ -107,11 +86,6 @@ pes_relations_precision, pes_relations_recall, pes_relations_f1 = precision_reca
 # --- TAR
 tar_a = extract_tar_from_pnml(model_a_path)
 tar_b = extract_tar_from_pnml(model_b_path)
-
-if not tar_a or not tar_b:
-    print("❌ TAR vuoto in uno dei modelli")
-    sys.exit(1)
-
 tar_similarity = dab_similarity(tar_a, tar_b)
 tar_precision, tar_recall, tar_f1 = precision_recall_f1(tar_a, tar_b)
 
@@ -127,7 +101,7 @@ pm4py_generalization = generalization_evaluator.apply(simulated_log, net_b, im_b
 pm4py_simplicity = simplicity_evaluator.apply(net_b)
 pm4py_f1 = harmonic_f1(avg_fitness, pm4py_precision)
 
-# --- Salvataggio metrics in CSV ---
+# --- Save all metrics in CSV
 df = pd.DataFrame([{
     "model_a": model_a_path,
     "model_b": model_b_path,
@@ -150,18 +124,30 @@ df = pd.DataFrame([{
     "pm4py_simplicity": pm4py_simplicity
 }])
 
-# Fallisci se DataFrame vuoto
-if df.empty:
-    print("❌ DataFrame vuoto, nessun dato da salvare")
-    sys.exit(1)
-
-# Crea cartella output e salva CSV
-os.makedirs("output", exist_ok=True)
-csv_path = os.path.join("output", "pairs.csv")
+csv_path = "pairs.csv"
 df.to_csv(csv_path, index=False)
+print(f"✅ All metrics saved to {csv_path}")
 
-# Crea zip
-with zipfile.ZipFile("output.zip", "w") as zipf:
-    zipf.write(csv_path, arcname="pairs.csv")
+#results analysis #optional
+import matplotlib.pyplot as plt
+import pandas as pd
+df = pd.read_csv("pairs.csv")
 
-print(f"✅ Tutte le metriche salvate in {csv_path} e compresse in output.zip")
+df["pair"] = df["model_a"].str.extract(r'(\d+)') + "-" + df["model_b"].str.extract(r'(\d+)')
+
+metrics_f1 = ["pes_events_f1", "pes_relations_f1", "tar_f1", "pm4py_f1"]
+
+plt.figure(figsize=(12, 6))
+
+for metric in metrics_f1:
+    plt.plot(df["pair"], df[metric], marker='o', label=metric)
+
+plt.xlabel("Model Pair")
+plt.ylabel("F1 Score")
+plt.title("Comparison of F1 Scores for BirthCertificate Model Pairs")
+plt.xticks(rotation=45)
+plt.ylim(0, 0.5)
+plt.grid(True, linestyle='--', alpha=0.5)
+plt.legend()
+plt.tight_layout()
+plt.show()
