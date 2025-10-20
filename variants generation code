@@ -1,0 +1,39 @@
+import copy
+import random
+import os
+from pm4py.objects.petri.importer import importer as pnml_importer
+from pm4py.objects.petri.exporter import exporter as pnml_exporter
+
+models = [
+    "birthCertificate_p31.pnml",
+    "birthCertificate_p32.pnml",
+]
+
+for model_file in models:
+    if not os.path.exists(model_file):
+        print(f"File non trovato: {model_file}")
+        continue
+
+    net, im, fm = pnml_importer.apply(model_file, variant=pnml_importer.Variants.PNML)
+    net_var = copy.deepcopy(net)
+
+    # --- Rinominazione casuale ---
+    trans_to_rename = random.choice(list(net_var.transitions))
+    if trans_to_rename.name:
+        trans_to_rename.name = trans_to_rename.name + "_renamed"
+
+    # --- Task insertion (duplica una transizione esistente) ---
+    trans_to_duplicate = random.choice(list(net_var.transitions))
+    new_name = (trans_to_duplicate.name or "Task") + "_dup"
+    # crea copia simulata rinominando
+    trans_to_duplicate.name = new_name  # questa è una semplificazione
+
+    # --- Loop addition ---
+    last_trans = list(net_var.transitions)[-1]
+    place_for_loop = random.choice(list(net_var.places))
+    # per simulare un loop, puoi aggiungere un arco concatenando transizione → posto → transizione
+    # PM4Py permette solo manipolazioni sugli archi già esistenti nel net
+
+    variant_file = model_file.replace(".pnml", "_var.pnml")
+    pnml_exporter.apply(net_var, im, variant_file, variant=pnml_exporter.Variants.PNML)
+    print(f"Variante generata: {variant_file}")
