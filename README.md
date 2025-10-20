@@ -11,7 +11,12 @@ The dataset was revised from the 2013 version with format fixes and an improved 
 - `results/`: folder where CSVs with metrics are saved
 - `requirements.txt`: Python dependencies with fixed versions
 - `reproducibility_protocol.tex`: document describing the 5-step reproducibility protocol
-
+- 
+#### Variant Generation
+The `models/` folder contains both original PNML models and their synthetic variants.
+The `scripts/` folder contains scripts to generate additional synthetic variants:
+- `generate_variants.py`: generates new synthetic variants by inserting tasks, adding loops, or renaming activities.
+- 
 ## Execution Modes
 
 1. **Sequential execution**  
