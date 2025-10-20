@@ -16,8 +16,7 @@ The dataset was revised from the 2013 version with format fixes and an improved 
 The `models/` folder contains both original PNML models and their synthetic variants.
 The `scripts/` folder contains scripts to generate additional synthetic variants:
 - `generate_variants.py`: generates new synthetic variants by inserting tasks, adding loops, or renaming activities.
-- 
-## Execution Modes
+### Execution Modes
 
 1. **Sequential execution**  
 Experiments are currently executed one after another (sequentially). This is the default mode and requires no additional setup.
