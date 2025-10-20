@@ -1,6 +1,10 @@
 # -SLRZampinoGengaLongoRepro
 This repository contains the code and PNML models used to compute process model comparison metrics, including fitness, precision, generalization, simplicity, PES, PSP, TAR similarity, and F1-scores for events and relations.
 
+# Dataset benchmark
+The PMMC 2015 dataset was downloaded from the official contest website (ai.wu.ac.at/emisa2015).
+The dataset was revised from the 2013 version with format fixes and an improved gold standard.
+
 ## Repository structure
 - `models/`: all PNML files to be compared
 - `run_experiment.py`: main script to compute all metrics
@@ -16,3 +20,4 @@ python -m venv venv
 source venv/bin/activate   # Linux/Mac
 venv\Scripts\activate      # Windows
 pip install -r requirements.txt
+
