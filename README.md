@@ -21,3 +21,10 @@ source venv/bin/activate   # Linux/Mac
 venv\Scripts\activate      # Windows
 pip install -r requirements.txt
 
+## Execution Modes
+
+1. **Sequential execution**  
+Experiments are currently executed one after another (sequentially). This is the default mode and requires no additional setup.
+
+2. **Parallel execution (optional)**  
+Parallel execution is not implemented in the current code. However, it can be achieved by wrapping the experiment loop using Python's `multiprocessing` or `joblib` to process multiple model pairs simultaneously, reducing overall computation time.
