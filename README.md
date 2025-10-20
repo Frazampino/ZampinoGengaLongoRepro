@@ -12,6 +12,15 @@ The dataset was revised from the 2013 version with format fixes and an improved 
 - `requirements.txt`: Python dependencies with fixed versions
 - `reproducibility_protocol.tex`: document describing the 5-step reproducibility protocol
 
+## Execution Modes
+
+1. **Sequential execution**  
+Experiments are currently executed one after another (sequentially). This is the default mode and requires no additional setup.
+
+2. **Parallel execution (optional)**  
+Parallel execution is not implemented in the current code. However, it can be achieved by wrapping the experiment loop using Python's `multiprocessing` or `joblib` to process multiple model pairs simultaneously, reducing overall computation time.
+
+
 ## Installation
 Create a Python 3.11 virtual environment and install dependencies:
 
@@ -21,10 +30,3 @@ source venv/bin/activate   # Linux/Mac
 venv\Scripts\activate      # Windows
 pip install -r requirements.txt
 
-## Execution Modes
-
-1. **Sequential execution**  
-Experiments are currently executed one after another (sequentially). This is the default mode and requires no additional setup.
-
-2. **Parallel execution (optional)**  
-Parallel execution is not implemented in the current code. However, it can be achieved by wrapping the experiment loop using Python's `multiprocessing` or `joblib` to process multiple model pairs simultaneously, reducing overall computation time.
