@@ -43,3 +43,8 @@ Build the Docker image and run the container:
 ```bash
 docker build -t zgl-repro .
 docker run --rm -v "$(pwd)/results:/app/results" zgl-repro
+
+## Data & DOI
+
+The dataset and resources for this project are available on **Mendeley Data**:  
+[https://data.mendeley.com/datasets/xt9gch8nzx/1](https://data.mendeley.com/datasets/xt9gch8nzx/1)
