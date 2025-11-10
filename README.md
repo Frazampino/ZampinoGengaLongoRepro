@@ -11,6 +11,12 @@ The dataset was revised from the 2013 version with format fixes and an improved 
 - `results/`: folder where CSVs with metrics are saved
 - `requirements.txt`: Python dependencies with fixed versions
 - `reproducibility_protocol.tex`: document describing the 5-step reproducibility protocol
+
+## Data & DOI
+
+The dataset and resources for this project are available on **Mendeley Data**:  
+[https://data.mendeley.com/datasets/xt9gch8nzx/1](https://data.mendeley.com/datasets/xt9gch8nzx/1)
+
 ### Variant Generation
 
 The `models/` folder contains both original PNML models and their synthetic variants.
@@ -28,7 +34,7 @@ Parallel execution is not implemented in the current code. However, it can be ac
 ## Installation
 Create a Python 3.11 virtual environment and install dependencies:
 
-```bash
+bash
 python -m venv venv
 source venv/bin/activate   # Linux/Mac
 venv\Scripts\activate      # Windows
@@ -44,7 +50,3 @@ Build the Docker image and run the container:
 docker build -t zgl-repro .
 docker run --rm -v "$(pwd)/results:/app/results" zgl-repro
 
-## Data & DOI
-
-The dataset and resources for this project are available on **Mendeley Data**:  
-[https://data.mendeley.com/datasets/xt9gch8nzx/1](https://data.mendeley.com/datasets/xt9gch8nzx/1)
