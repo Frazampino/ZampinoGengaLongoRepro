@@ -34,3 +34,13 @@ source venv/bin/activate   # Linux/Mac
 venv\Scripts\activate      # Windows
 pip install -r requirements.txt
 
+## Running with Docker
+
+This project can be executed in a fully reproducible environment using Docker, avoiding the need to manually install Python or dependencies.  
+
+Build the Docker image and run the container:
+
+```bash
+docker build -t zgl-repro .
+docker run --rm -v "$(pwd)/results:/app/results" zgl-repro
+
