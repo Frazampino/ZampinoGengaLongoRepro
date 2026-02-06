@@ -1,0 +1,20 @@
+name: Test Docker Build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  docker-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Build Docker image
+        run: docker build -t zgl-repro .
+
+      - name: Run Docker container
+        run: docker run --rm -v ${{ github.workspace }}/results:/app/results zgl-repro
