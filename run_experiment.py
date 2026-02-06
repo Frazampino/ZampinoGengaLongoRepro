@@ -1,19 +1,10 @@
-# *1. Environment setup: create a Python 3.11 virtual environment and install the dependencies from requirements.txt*
-# *2. Model import and pre-processing: load PNML models, extract events, relations, and TAR*
-# *3. Metric computation: measure PES, PSP, TAR similarity, fitness, precision, generalization, simplicity, F1-score*
-# *4. Result storage and analysis: save all metrics in a CSV file for each pair of models*
-# *5. Reproducibility verification: fully reproducible pipeline with scripts available in the repository.*
-
 """
-run_experiment_standalone.py
-----------------------------
-Compute similarity metrics between two PNML Petri nets:
-- PES (Process Element Similarity) on events and relations, with F1-score
-- TAR (Transition Adjacency Relations) with F1-score
-- PM4Py conformance metrics: fitness, precision, F1-score (harmonic mean), generalization, simplicity
-- Save all metrics in CSV: pairs.csv
+run_experiment.py
+-----------------
+Compute similarity metrics between two PNML Petri nets and save results in `results/pairs.csv`.
 """
 
+import os
 import pandas as pd
 from pm4py.objects.petri_net.importer import importer as pnml_importer
 from pm4py.algo.simulation.playout.petri_net import algorithm as simulator
@@ -21,6 +12,7 @@ from pm4py.algo.conformance.alignments.petri_net import algorithm as alignments
 from pm4py.algo.evaluation.precision import algorithm as precision_evaluator
 from pm4py.algo.evaluation.generalization import algorithm as generalization_evaluator
 from pm4py.algo.evaluation.simplicity import algorithm as simplicity_evaluator
+import matplotlib.pyplot as plt
 
 # -----------------------------
 # Utility functions
@@ -68,9 +60,16 @@ def dab_similarity(tar1, tar2):
 # -----------------------------
 # Main computation
 # -----------------------------
+
+# Crea la cartella results se non esiste
+results_dir = "results"
+os.makedirs(results_dir, exist_ok=True)
+
+# Percorsi modelli
 model_a_path = "models-variants/dataset2/models/birthCertificate_p31.pnml"
 model_b_path = "models-variants/dataset2/models/birthCertificate_p32.pnml"
 
+# Importa modelli
 net_a, im_a, fm_a = pnml_importer.apply(model_a_path)
 net_b, im_b, fm_b = pnml_importer.apply(model_b_path)
 
@@ -94,14 +93,15 @@ simulated_log = simulator.apply(
     net_a, im_a, variant=simulator.Variants.BASIC_PLAYOUT,
     parameters={"max_trace_length": 15, "no_traces": 30}
 )
-results = alignments.apply(simulated_log, net_b, im_b, fm_b)
-avg_fitness = sum(r["fitness"] for r in results) / len(results)
+results_align = alignments.apply(simulated_log, net_b, im_b, fm_b)
+avg_fitness = sum(r["fitness"] for r in results_align) / len(results_align)
 pm4py_precision = precision_evaluator.apply(simulated_log, net_b, im_b, fm_b)
 pm4py_generalization = generalization_evaluator.apply(simulated_log, net_b, im_b, fm_b)
 pm4py_simplicity = simplicity_evaluator.apply(net_b)
 pm4py_f1 = harmonic_f1(avg_fitness, pm4py_precision)
 
-# --- Save all metrics in CSV
+# --- Save all metrics in CSV inside results/
+csv_path = os.path.join(results_dir, "pairs.csv")
 df = pd.DataFrame([{
     "model_a": model_a_path,
     "model_b": model_b_path,
@@ -123,22 +123,14 @@ df = pd.DataFrame([{
     "pm4py_generalization": pm4py_generalization,
     "pm4py_simplicity": pm4py_simplicity
 }])
-
-csv_path = "pairs.csv"
 df.to_csv(csv_path, index=False)
 print(f"✅ All metrics saved to {csv_path}")
 
-#results analysis #optional
-import matplotlib.pyplot as plt
-import pandas as pd
-df = pd.read_csv("pairs.csv")
-
+# Optional: quick plot of F1 scores
 df["pair"] = df["model_a"].str.extract(r'(\d+)') + "-" + df["model_b"].str.extract(r'(\d+)')
-
 metrics_f1 = ["pes_events_f1", "pes_relations_f1", "tar_f1", "pm4py_f1"]
 
 plt.figure(figsize=(12, 6))
-
 for metric in metrics_f1:
     plt.plot(df["pair"], df[metric], marker='o', label=metric)
 
