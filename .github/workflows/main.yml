@@ -43,9 +43,9 @@ jobs:
           echo "Starting experiment..."
           python run_experiment.py
 
-      - name: Upload results
-        if: success()
-        uses: actions/upload-artifact@v4
-        with:
-          name: experiment-results
-          path: output.zip
+     - name: Upload results
+  if: success()
+  uses: actions/upload-artifact@v4
+  with:
+    name: experiment-results
+    path: results/*
