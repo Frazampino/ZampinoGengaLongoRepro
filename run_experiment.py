@@ -68,8 +68,8 @@ def dab_similarity(tar1, tar2):
 # -----------------------------
 # Main computation
 # -----------------------------
-model_a_path = "models/birthCertificate_p31.pnml"
-model_b_path = "models/birthCertificate_p32.pnml"
+model_a_path = "models-variants/dataset2/birthCertificate_p31.pnml"
+model_b_path = "models-variants/dataset2/birthCertificate_p32.pnml"
 
 net_a, im_a, fm_a = pnml_importer.apply(model_a_path)
 net_b, im_b, fm_b = pnml_importer.apply(model_b_path)
