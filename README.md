@@ -49,4 +49,18 @@ Build the Docker image and run the container:
 ```bash
 docker build -t zgl-repro .
 docker run --rm -v "$(pwd)/results:/app/results" zgl-repro
+```
 
+### Running with docker compose
+
+All in one build and run with docker compose:
+
+```bash
+docker compose up
+```
+
+✅ Tested with Podman:
+
+```bash
+podman compose up
+```
