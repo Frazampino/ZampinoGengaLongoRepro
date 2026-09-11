@@ -59,7 +59,7 @@ To run the script, the following environmental variables need to be defined:
 
 | name | description |
 | --- | --- |
-| PAIRS_CATALOG_CSV | Path to the model pairs in the comparison. Defaults to 'assets/pairs-catalog-models.pnml' |
+| PAIRS_CATALOG_CSV | Path to the model pairs in the comparison. Defaults to 'assets/pairs-catalog-models.csv' |
 
 The execution steps below already include the full definition of such environment variables.
 
@@ -68,7 +68,7 @@ Build the Docker image and run the container:
 
 ```bash
 docker build -t reproducibility-behavioural .
-docker run --rm -v "$(pwd)/results:/app/results" -e PAIRS_CATALOG_CSV=assets/pairs-catalog-models.pnml
+docker run --rm -v "$(pwd)/results:/app/results" -e PAIRS_CATALOG_CSV=assets/pairs-catalog-models.csv
 ```
 
 ### Pull and run the image on Docker Hub
@@ -76,7 +76,7 @@ docker run --rm -v "$(pwd)/results:/app/results" -e PAIRS_CATALOG_CSV=assets/pai
 Pull and run the image released on Docker Hub:
 
 ```bash
-docker run --rm -v "$(pwd)/results:/app/results" -e PAIRS_CATALOG_CSV=assets/pairs-catalog-models.pnml
+docker run --rm -v "$(pwd)/results:/app/results" -e PAIRS_CATALOG_CSV=assets/pairs-catalog-models.csv
 ```
 
 ### Run with docker compose
