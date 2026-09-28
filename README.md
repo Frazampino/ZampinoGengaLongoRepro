@@ -98,3 +98,16 @@ podman compose up
 
 > [!Note] Environment variables
 > The `docker-compose.yaml` file includes the key-value definition of the environment variables under the path _services>bpmn>environment_.
+
+### Statistical analysis
+
+Once the main script has run and the output files have been successfully generated, it is possible to perform a statistical analysis to fetch the differences among PES, PM4PY, and TAR through F1-scores, bootstrap confidence intervals and mean rankings.
+
+The python script is run as follows:
+
+```bash
+bash
+python -m venv venv
+venv\Scripts\activate
+python statistical_analysis.py
+```

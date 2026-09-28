@@ -13,7 +13,7 @@ import random
 import platform
 import re
 from pathlib import Path
-
+import time
 import numpy as np
 import pandas as pd
 import pm4py
@@ -21,6 +21,19 @@ from pm4py.objects.petri_net.importer import importer as pnml_importer
 from pm4py.algo.simulation.playout.petri_net import algorithm as simulator
 from pm4py.algo.conformance.alignments.petri_net import algorithm as alignments
 from pm4py.algo.evaluation.precision import algorithm as precision_evaluator
+
+# Deterministic playout. pm4py's basic playout draws the next transition with
+# random.choice(list(enabled)), where `enabled` is a set of Transition objects
+# hashed by memory address: its iteration order differs in every process, so a
+# fixed seed alone does not make the simulated logs reproducible. Sorting the
+# candidates by their stable PNML identifier removes that source of variation.
+from pm4py.algo.simulation.playout.petri_net.variants import basic_playout as _basic_playout
+
+def _deterministic_choice(candidates):
+    ordered = sorted(candidates, key=lambda t: (t is None, "" if t is None else str(t.name)))
+    return random.choice(ordered)
+
+_basic_playout.choice = _deterministic_choice
 
 print("Python:", sys.version.replace("\n", " "))
 print("Platform:", platform.platform())
@@ -51,7 +64,7 @@ RESULTS_DIR.mkdir(exist_ok=True, parents=True)
 # Coppie dell'esperimento, definite esplicitamente prima dell'esecuzione.
 # L'ordine A -> B è rilevante per PM4Py.
 print(f"Caricamento coppie da {PAIRS_CATALOG_CSV}")
-df_pairs = pd.read_csv(Path(PAIRS_CATALOG_CSV))
+df_pairs = pd.read_csv(Path(PAIRS_CATALOG_CSV), header=None)
 PAIRS = list(df_pairs.itertuples(index=False, name=None))
 
 
@@ -189,13 +202,16 @@ np.random.seed(RANDOM_SEED)
 
 rows = []
 for pair_number, (model_a, model_b, path_a, path_b) in enumerate(resolved_pairs, start=1):
+    start_time = time.time()
     print(f"[{pair_number}/{len(PAIRS)}] {model_a} -> {model_b}")
     metrics = compute_pair_metrics(path_a, path_b)
+    end_time = time.time()
     rows.append({
         "pair": pair_number,
         "model_a": model_a,
         "model_b": model_b,
         **metrics,
+        "duration_seconds": end_time - start_time,
     })
 
 results_df = pd.DataFrame(rows)
@@ -206,17 +222,20 @@ reported_metrics = [
     "PES Behavioral",
     "TAR Similarity Behavioral",
     "PM4Py Behavioral",
+    "duration_seconds",
 ]
 
 means = results_df[reported_metrics].mean()
 summary_df = means.rename("mean").to_frame().T
 
-print("Medie calcolate sulle coppie eseguite:")
+# print("Medie calcolate sulle coppie eseguite:")
 # display(summary_df.round(6))
 
 
 results_df.to_csv(os.path.join(RESULTS_DIR, RESULTS_CSV), index=False, float_format="%.9f")
 summary_df.to_csv(os.path.join(RESULTS_DIR, SUMMARY_CSV), index=False, float_format="%.9f")
+
+total_duration = end_time - start_time
 
 print("Risultati individuali:", Path(RESULTS_DIR / RESULTS_CSV).resolve())
 print("Medie:", Path(RESULTS_DIR / SUMMARY_CSV).resolve())
