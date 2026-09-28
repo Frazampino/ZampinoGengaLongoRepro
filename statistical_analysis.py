@@ -9,7 +9,7 @@ import numpy as np
 import pandas as pd
 from scipy.stats import friedmanchisquare, wilcoxon
 
-RESULTS_DIR = Path("results")
+RESULTS_DIR = Path("output")
 INPUT_CSV = RESULTS_DIR / "pairs-catalog-models_results.csv"
 OUTPUT_CSV = RESULTS_DIR / "statistical_analysis.csv"
 OUTPUT_JSON = RESULTS_DIR / "statistical_analysis.json"
