@@ -56,8 +56,8 @@ TAR_NUMBER_OF_TRACES = 100
 PM4PY_NUMBER_OF_TRACES = 30
 PM4PY_MAX_TRACE_LENGTH = 15
 
-RESULTS_CSV = 'risultati_senza_varianti_calcolati.csv'
-SUMMARY_CSV = 'medie_senza_varianti_calcolate.csv'
+RESULTS_CSV = Path(PAIRS_CATALOG_CSV).stem + '_results' + Path(PAIRS_CATALOG_CSV).suffix
+SUMMARY_CSV = Path(PAIRS_CATALOG_CSV).stem + '_results-summary' + Path(PAIRS_CATALOG_CSV).suffix
 RESULTS_DIR = Path("results/")
 RESULTS_DIR.mkdir(exist_ok=True, parents=True)
 
