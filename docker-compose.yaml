@@ -1,12 +1,10 @@
-version: '3'
-
 services:
   bpmn:
-    image: francizampi/reproducibility-behavioural:latest
+    image: zgl-repro
     build:
       context: .
       dockerfile: Dockerfile
     environment:
       - PAIRS_CATALOG_CSV=assets/pairs-catalog-models.csv
     volumes:
-      - ./output/:/app/results
+      - ./results/:/app/results
